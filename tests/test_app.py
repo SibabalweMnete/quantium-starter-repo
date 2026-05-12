@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from app import app
 
 
@@ -8,12 +13,13 @@ def find_component(component, predicate):
     children = getattr(component, 'children', None)
     if isinstance(children, list):
         for child in children:
-            result = find_component(child, predicate)
-            if result:
-                return result
+            if not isinstance(child, (str, int, float)):
+                result = find_component(child, predicate)
+                if result is not None:
+                    return result
     elif children is not None and not isinstance(children, (str, int, float)):
         result = find_component(children, predicate)
-        if result:
+        if result is not None:
             return result
 
     return None
